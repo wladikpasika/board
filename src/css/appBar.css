@@ -1,0 +1,5 @@
+.app-bar > button:nth-child(1) {
+    display: none !important;
+}
+
+
