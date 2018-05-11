@@ -25,7 +25,7 @@ class AlertDialog extends Component {
           open={open}
           onRequestClose={handleAlert}
         >
-          Enter a word with more than 3 symbols for search!!!
+          No results!!!
         </Dialog>
       </div>
     );

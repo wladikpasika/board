@@ -20,6 +20,7 @@ export default class Root extends Component {
     dialogAdd: false,
     dialogEdit: false,
     alertAdd: false,
+    alertResult:false,
     taskTodelete: null,
     alertDeleteConfirm: false,
     titleByDefault: null,
@@ -32,10 +33,9 @@ export default class Root extends Component {
   iterator = 0;
 
   handleAddItem = (values = {}) => {
-    const { tasks, searchValue } = this.state;
+    const { tasks } = this.state;
     const { title, description } = values;
-    const newFilteredTasks = {};
-
+  
     const newItem = {
       title,
       description,
@@ -47,15 +47,24 @@ export default class Root extends Component {
       [this.iterator++]: newItem
     };
 
-    Object.keys(newTasks).filter(propName => (
-      newTasks[propName].title.includes(searchValue) ||
-      newTasks[propName].description.includes(searchValue)
-    )).forEach(propName => newFilteredTasks[propName] = newTasks[propName]);
-
     this.setState({
-      tasks: newTasks,
-      filteredTasks: newFilteredTasks
+      tasks: newTasks
     });
+  }
+
+  handleUpdateFilteretedTasks( values ){
+    const { searchValue } = this.state;
+    const regexp = new RegExp(searchValue, 'ig');
+    const newTasks = {
+      ...values
+    };
+
+    let newFilteredTasks = {};
+      Object.keys(newTasks).filter(propName => (
+        newTasks[propName].title.search(regexp) !== -1  ||
+        newTasks[propName].description.search(regexp) !== -1 
+      )).forEach(propName => newFilteredTasks[propName] = newTasks[propName]);
+    return newFilteredTasks;
   }
 
   handleAddItemCheck = (values) => {
@@ -169,113 +178,44 @@ export default class Root extends Component {
     });
   };
 
-  // todoFilters() {
-
-  //   const { tasks, filteredTask, searchValue } = this.state;
-  //   const copyTasks = { ...tasks };
-  //   // here we are filter filtersTask object  by status
-  //   const todoTasks = () => {
-  //     const newTasks = {};
-  //     const keys = Object.keys(filteredTask).filter(keys => filteredTask[keys].status === "todo");
-  //     keys.forEach(key => newTasks[key] = filteredTask[key]);
-  //     return newTasks;
-  //   }
-  //   return todoTasks();
-  // }
-
-  filtersTasks = () => {
-
-
-    // const regexp = new RegExp(searchValue, 'ig');
-    //const copyTasks = { ...tasks }
-
-
-    // const tasksKeys = Object.keys(filteredTask);
-    // const newFilteredTasks = {};
-
-    // tasksKeys.forEach(key => {
-    //   filteredTask[key].title.search(regexp) !== -1
-    //     ? newFilteredTasks[key] = filteredTask[key]
-    //     : false
-    // });
-
-    // if (Object.keys(newFilteredTasks).length) {
-    //   this.setState({ filteredTask: newFilteredTasks })
-    // }
-  }
-
-  componentWillUpdate(nextProps, nextState) {
-    const { searchValue, tasks } = this.state;
-
-    const copyTasks = { ...tasks };
-
-    if (nextState.searchValue !== searchValue) {
-      if(nextState.searchValue == 0 ){
-        this.setState({ filteredTasks: copyTasks })
-      }
-    }
-  }
-
-  // componentDidUpdate(prevProps, prevState) {
-
-  //   const { tasks, filteredTask, searchValue } = this.state;
-  //   const copyTasks = { ...tasks };
-
-  //   if (prevState.tasks !== tasks) {
-  //     this.setState( // copy to filtersTask all items
-  //       {
-  //         filtersTask: copyTasks
-  //       }
-  //     )
-  //   }
-  //   else if (prevState.filtersTask !== filteredTask) {
-  //     this.setState({
-  //       todoTasks: this.todoFilters() //update todo
-  //     });
-  //   }
-  //   else if (prevState.searchValue !== searchValue) {
-
-  //     const prevLength = prevState.searchValue.length;
-  //     const currentLength = searchValue.length;
-  //     const clear = () => this.setState({
-  //       searchValue: '',
-  //       filtersTask: { ...tasks }
-  //     });
-
-  //     if (prevLength === 0 && currentLength > 3) {
-  //       this.filtersTasks(); //when update search value, we`re updating filtersTask in State
-  //     }
-  //     else if (prevLength === 0 && currentLength <= 3) {
-  //       clear();
-  //       this.handleAlertSearch();
-  //     }
-  //     else if (prevLength > 3 && currentLength <= 3 && currentLength !== 0) {
-  //       clear();
-  //       this.handleAlertSearch();
-  //     }
-  //     else if (prevLength > 3 && currentLength === 0) {
-  //       clear();
-  //     }
-  //   }
-  // }
-
   handleSearchInput = (value) => {
-    const { tasks } = this.state;
-    const newFilteredTasks = {};
+    const { tasks, alertSearch } = this.state;
+    let filteredTasks;
 
-    Object.keys(tasks).filter(propName => (
-      tasks[propName].title.includes(value) ||
-      tasks[propName].description.includes(value)
-    )).forEach(propName => newFilteredTasks[propName] = tasks[propName]);
+    if( value.length >3 ){
+      filteredTasks = this.handleUpdateFilteretedTasks(tasks);
 
-    this.setState({
-      filteredTasks: newFilteredTasks,
-      searchValue: value
-    });
+      this.setState({
+          filteredTasks: filteredTasks,
+          searchValue: value
+        }, ()=>{
+          !Object.keys(filteredTasks).length
+          ?this.handleAlertSearch()
+          :false
+        })
+    }
+    else{
+        this.setState({searchValue: value});
+    }
   }
 
   handleClearSearchInput = () => {
     this.setState({ searchValue: '' });
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    const { searchValue, tasks } = this.state;
+    const copyTasks = { ...tasks };
+
+    if (nextState.searchValue !== searchValue) {
+      if(!nextState.searchValue.length){
+        this.setState({ filteredTasks: copyTasks })
+      }
+    }
+    else if( nextState.tasks !== tasks ){
+      this.setState({ filteredTasks: this.handleUpdateFilteretedTasks(nextState.tasks)}
+    )
+    }
   }
 
   render() {
@@ -329,6 +269,20 @@ export default class Root extends Component {
             tasks={this.state.filteredTasks}
             onAlertConfirm={this.handleAlertConfirm}
             onEdit={this.handleEditDialogCall}
+           
+          
+          />
+          <List
+            tasks={this.state.filteredTasks}
+            onAlertConfirm={this.handleAlertConfirm}
+            onEdit={this.handleEditDialogCall}
+
+          />
+          <List
+            tasks={this.state.filteredTasks}
+            onAlertConfirm={this.handleAlertConfirm}
+            onEdit={this.handleEditDialogCall}
+            
           />
         </Fragment>
       </MuiThemeProvider>

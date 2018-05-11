@@ -8,6 +8,11 @@ import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 
+
+
+import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
+import FlatButton from 'material-ui/FlatButton';
+
 class ComponentList extends Component {
 
   handleEditTask = (values) => {
@@ -33,6 +38,7 @@ class ComponentList extends Component {
             Object.keys(tasks).map((key, index) => {
               const title = tasks[key].title;
               const description = tasks[key].description;
+
               const rightHandler = (
               <IconMenu 
                 iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
@@ -64,17 +70,19 @@ class ComponentList extends Component {
             return (
               <Fragment key={index}>
                 <ListItem
-                  rightIcon={rightHandler}
+                  rightIcon={ rightHandler }
                 >
-                  <span className="checkbox-content">
-                    { title }
-                  </span>
-                </ListItem>
-                <div 
-                  className = "description-list"
-                >
-                { description }
-                </div>
+                <Card>
+                    <CardHeader
+                      title={ title }
+                      actAsExpander={ true }
+                      showExpandableButton={ true }
+                    />
+                    <CardText expandable = {true}>
+                    {description}
+                    </CardText>
+              </Card>
+                </ListItem>       
               </Fragment>
             );
           })  
