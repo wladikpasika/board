@@ -265,25 +265,27 @@ export default class Root extends Component {
             onClear={this.handleClearSearchInput}
             searchValue={this.state.searchValue}
           />
+          <div className = "lists" style={ {display: 'flex'}}>
           <List
             tasks={this.state.filteredTasks}
             onAlertConfirm={this.handleAlertConfirm}
             onEdit={this.handleEditDialogCall}
-           
-          
+            status="todo"
           />
           <List
             tasks={this.state.filteredTasks}
             onAlertConfirm={this.handleAlertConfirm}
             onEdit={this.handleEditDialogCall}
+            status="inProgress"
 
           />
           <List
             tasks={this.state.filteredTasks}
             onAlertConfirm={this.handleAlertConfirm}
             onEdit={this.handleEditDialogCall}
-            
+            status="done" 
           />
+          </div>
         </Fragment>
       </MuiThemeProvider>
     );

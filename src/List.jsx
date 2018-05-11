@@ -8,10 +8,10 @@ import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 
-
-
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
+
+import style from './css/list.css';
 
 class ComponentList extends Component {
 
@@ -29,13 +29,17 @@ class ComponentList extends Component {
   }
 
   render() {
-    const { tasks = {}, onAlertConfirm } = this.props;
+    const { tasks = {}, onAlertConfirm, status } = this.props;
 
     return (
       <div className="list-item">
         <List>
           {
             Object.keys(tasks).map((key, index) => {
+              if(tasks[key].status === status){
+                
+              }///
+
               const title = tasks[key].title;
               const description = tasks[key].description;
 
@@ -68,7 +72,9 @@ class ComponentList extends Component {
               </IconMenu>
             )
             return (
-              <Fragment key={index}>
+              <div key={index}
+              className="card"
+              >
                 <ListItem
                   rightIcon={ rightHandler }
                 >
@@ -83,7 +89,7 @@ class ComponentList extends Component {
                     </CardText>
               </Card>
                 </ListItem>       
-              </Fragment>
+              </div>
             );
           })  
         }
