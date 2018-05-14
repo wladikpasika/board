@@ -10,8 +10,15 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
+import ArrowDropRight from 'material-ui/svg-icons/navigation-arrow-drop-right';
 
 import style from './css/list.css';
+
+const styles = {
+  menuItemNone: { display: "none" },
+  menuItemBlock: { display: "block" },
+  cardText:{ whiteSpace: "normal" }
+};
 
 class ComponentList extends Component {
 
@@ -29,18 +36,16 @@ class ComponentList extends Component {
   }
 
   render() {
-    const { tasks = {}, onAlertConfirm, status } = this.props;
+    const { tasks = {}, onAlertConfirm, status, onMove } = this.props;
 
     return (
       <div className="list-item">
         <List>
           {
             Object.keys(tasks).map((key, index) => {
-              if(tasks[key].status === status){
-                
-              }///
 
-              const title = tasks[key].title;
+              if(tasks[key].status === status){
+                const title = tasks[key].title;
               const description = tasks[key].description;
 
               const rightHandler = (
@@ -69,6 +74,36 @@ class ComponentList extends Component {
                   }
                 }
                 />
+                <MenuItem
+                  primaryText="Move To"
+                  rightIcon={<ArrowDropRight />}
+                  menuItems={[
+                      <MenuItem primaryText="Move to Todo" 
+                      style = {
+                        status==='todo'
+                        ?styles.menuItemNone
+                        :styles.menuItemBlock 
+                      }
+                      onClick = {() => onMove(key, 'todo')}
+                      />,
+                      <MenuItem primaryText='Move to "In Progress"' 
+                        style = {
+                        status==='inProgress'
+                        ?styles.menuItemNone
+                        :styles.menuItemBlock
+                        }
+                        onClick = {() => onMove(key, 'inProgress')}
+                      />,
+                      <MenuItem primaryText="Move to Done" 
+                      style = {
+                        status==='done'
+                        ?styles.menuItemNone
+                        :styles.menuItemBlock
+                        }
+                        onClick = {() => onMove(key, 'done')}
+                      />,
+          ]}
+        />
               </IconMenu>
             )
             return (
@@ -87,10 +122,11 @@ class ComponentList extends Component {
                     <CardText expandable = {true}>
                     {description}
                     </CardText>
-              </Card>
+                </Card>
                 </ListItem>       
               </div>
-            );
+            );  
+              }  
           })  
         }
         </List>

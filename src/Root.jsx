@@ -10,7 +10,16 @@ import EditeTask from './components/PrompDialogEdit';
 import AlertAdd from './components/AlertAdd';
 import List from './List';
 import AlertDeleteConfirm from './components/AlertDeleteConfirm';
-import AlertSearch from './components/AlertSearch'
+import AlertSearch from './components/AlertSearch';
+
+import {
+  Table,
+  TableBody,
+  TableHeader,
+  TableHeaderColumn,
+  TableRow,
+  TableRowColumn,
+} from 'material-ui/Table';
 
 export default class Root extends Component {
   state = {
@@ -203,6 +212,16 @@ export default class Root extends Component {
     this.setState({ searchValue: '' });
   }
 
+  handleMove = (key, status) => {
+    const newTasks = { ...this.state.tasks };
+    newTasks[key].status = status;
+    console.log(newTasks,'newTasks');
+    this.setState({tasks:newTasks}, ()=>{
+      console.log(this.state.tasks,'Tasks');
+    })
+
+  }
+
   componentWillUpdate(nextProps, nextState) {
     const { searchValue, tasks } = this.state;
     const copyTasks = { ...tasks };
@@ -229,6 +248,49 @@ export default class Root extends Component {
       tasks,
       alertSearch,
     } = this.state;
+
+    const TableExampleSimple = () => (
+      <Table
+      selectable={false}
+      >
+        <TableHeader 
+          selectable={false}
+          displaySelectAll={false}
+        >
+          <TableRow selectable={false} 
+          >
+            <TableHeaderColumn >Todo</TableHeaderColumn>
+            <TableHeaderColumn >In Progress</TableHeaderColumn>
+            <TableHeaderColumn >Done</TableHeaderColumn>
+          </TableRow>
+        </TableHeader>
+        <TableBody displayRowCheckbox={false}>
+          <TableRow>
+            <TableRowColumn><List
+                tasks={this.state.filteredTasks}
+                onAlertConfirm={this.handleAlertConfirm}
+                onEdit={this.handleEditDialogCall}
+                status="todo"
+                onMove = {this.handleMove}
+              /></TableRowColumn>
+            <TableRowColumn><List
+                tasks={this.state.filteredTasks}
+                onAlertConfirm={this.handleAlertConfirm}
+                onEdit={this.handleEditDialogCall}
+                status="inProgress"
+                onMove = {this.handleMove}
+              /></TableRowColumn>
+            <TableRowColumn><List
+                tasks={this.state.filteredTasks}
+                onAlertConfirm={this.handleAlertConfirm}
+                onEdit={this.handleEditDialogCall}
+                status="done" 
+                onMove = {this.handleMove}
+              /></TableRowColumn>
+          </TableRow>
+        </TableBody>
+      </Table>
+    );
 
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(lightBaseTheme)}>
@@ -265,27 +327,30 @@ export default class Root extends Component {
             onClear={this.handleClearSearchInput}
             searchValue={this.state.searchValue}
           />
-          <div className = "lists" style={ {display: 'flex'}}>
-          <List
+          
+         {/*<List
             tasks={this.state.filteredTasks}
             onAlertConfirm={this.handleAlertConfirm}
             onEdit={this.handleEditDialogCall}
             status="todo"
+            onMove = {this.handleMove}
           />
           <List
             tasks={this.state.filteredTasks}
             onAlertConfirm={this.handleAlertConfirm}
             onEdit={this.handleEditDialogCall}
             status="inProgress"
-
+            onMove = {this.handleMove}
           />
           <List
             tasks={this.state.filteredTasks}
             onAlertConfirm={this.handleAlertConfirm}
             onEdit={this.handleEditDialogCall}
             status="done" 
-          />
-          </div>
+            onMove = {this.handleMove}
+          />*/} 
+          <TableExampleSimple />
+          
         </Fragment>
       </MuiThemeProvider>
     );
