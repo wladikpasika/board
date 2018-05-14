@@ -23,14 +23,11 @@ import {
   TableRowColumn,
 } from 'material-ui/Table';
 
-
-const styles={
-  headerColumn:{
-    textAligth: "center !important" ,
+const styles = {
+  headerColumn: {
+    textAligth: "center !important",
   }
 }
-
-
 
 export default class Root extends Component {
   state = {
@@ -74,20 +71,15 @@ export default class Root extends Component {
     });
   }
 
-  handleUpdateFilteretedTasks(values) {
-    const { searchValue } = this.state;
-    const regexp = new RegExp(searchValue, 'ig');
-    const newTasks = {
-      ...values
-    };
-    
+  handleUpdateFilteretedTasks(searchValue, tasks) {
     let newFilteredTasks = {};
-    Object.keys(newTasks).filter(propName => (
-      newTasks[propName].title.search(regexp) !== -1 ||
-      newTasks[propName].description.search(regexp) !== -1
-    )).forEach(propName => newFilteredTasks[propName] = newTasks[propName]);
-    return newFilteredTasks;
 
+    Object.keys(tasks).filter(propName => (
+      tasks[propName].title.toLowerCase().includes(searchValue.toLowerCase()) !== false ||
+      tasks[propName].description.toLowerCase().includes(searchValue.toLowerCase()) !== false
+    )).forEach(propName => newFilteredTasks[propName] = tasks[propName]);
+
+    return newFilteredTasks;
   }
 
   handleAddItemCheck = (values) => {
@@ -142,11 +134,11 @@ export default class Root extends Component {
     })
   }
 
- /* handleAlertSearch = () => {
-    this.setState({
-      alertSearch: !this.state.alertSearch
-    })
-  }*/
+  /* handleAlertSearch = () => {
+     this.setState({
+       alertSearch: !this.state.alertSearch
+     })
+   }*/
 
   handleAlertConfirm = (key) => {
     if (key) {
@@ -177,8 +169,7 @@ export default class Root extends Component {
 
   handleEditTask = (values) => {
     const { title, description } = values
-    if (title && title.trim()
-    ) {
+    if (title && title.trim()) {
       this.handleEditItem(this.state.keyEditedTask, values);
     }
     else {
@@ -187,7 +178,6 @@ export default class Root extends Component {
   }
 
   handleEditDialogCall = (values = {}) => {
-    
     const { title, description, key } = values;
     console.log(title, description, key);
     this.setState({
@@ -201,9 +191,8 @@ export default class Root extends Component {
   handleSearchInput = (value) => {
     const { tasks, alertSearch } = this.state;
     let filteredTasks;
-      this.setState({
-        searchValue: value
-      })
+
+    this.setState({ searchValue: value });
   }
 
   handleClearSearchInput = () => {
@@ -213,40 +202,46 @@ export default class Root extends Component {
   handleMove = (key, status) => {
     const newTasks = { ...this.state.tasks };
     newTasks[key].status = status;
-    this.setState({ tasks: newTasks }, () => {
-    })
+    this.setState({ tasks: newTasks })
   }
-
 
   componentDidMount() {
     const cashedTasks = storageCheck();
 
     if (cashedTasks) {
-      this.setState({ tasks: cashedTasks });
-    }
-  }
-  
-  componentWillUpdate(nextProps, nextState) {
-    const { searchValue, tasks } = this.state;
-    const copyTasks = { ...tasks };
-    
-    if ( nextState.searchValue !== searchValue ) {
-      if ( !nextState.searchValue.length ) {
-        this.setState({ filteredTasks: copyTasks })
-      }
-      else{
-        this.setState({ filteredTasks: this.handleUpdateFilteretedTasks(nextState.tasks) });
-      }
-    }
-    else if (nextState.tasks !== tasks) {
-      this.setState({ filteredTasks: this.handleUpdateFilteretedTasks(nextState.tasks) });
+      this.setState({
+        tasks: cashedTasks,
+        filteredTasks: cashedTasks
+      });
     }
   }
 
   componentDidUpdate(prevProps, prevState) {
+    const { searchValue, tasks } = this.state;
+    const copyTasks = { ...tasks };
+
     if (prevState.tasks !== this.state.tasks) {
       handleStorage(this.state.tasks);
     };
+
+    if (searchValue && searchValue !== prevState.searchValue) {
+      const newTasks = this.handleUpdateFilteretedTasks(searchValue, tasks);
+      this.setState({ filteredTasks: newTasks });
+    }
+
+    // if (prevState.searchValue !== searchValue) {
+    //   if (!prevState.searchValue.length) {
+    //     this.setState({ filteredTasks: copyTasks })
+    //   }
+    //   else {
+    //     console.log(2)
+    //     this.setState({ filteredTasks: this.handleUpdateFilteretedTasks(tasks) });
+    //   }
+    // }
+    // else if (prevState.tasks !== tasks) {
+    //   console.log(3)
+    //   this.setState({ filteredTasks: this.handleUpdateFilteretedTasks(tasks) });
+    // }
   }
 
   render() {
@@ -272,9 +267,9 @@ export default class Root extends Component {
           displaySelectAll={false}
         >
           <TableRow selectable={false} >
-            <TableHeaderColumn style = {styles.headerColumn}>Todo</TableHeaderColumn>
-            <TableHeaderColumn style = {styles.headerColumn}>In Progress</TableHeaderColumn>
-            <TableHeaderColumn style = {styles.headerColumn}>Done</TableHeaderColumn>
+            <TableHeaderColumn style={styles.headerColumn}>Todo</TableHeaderColumn>
+            <TableHeaderColumn style={styles.headerColumn}>In Progress</TableHeaderColumn>
+            <TableHeaderColumn style={styles.headerColumn}>Done</TableHeaderColumn>
           </TableRow>
         </TableHeader>
         <TableBody displayRowCheckbox={false}>
@@ -331,9 +326,9 @@ export default class Root extends Component {
           />*/}
           <AlertDeleteConfirm
             open={alertDeleteConfirm}
-            onAlertConfirm={ this.handleAlertConfirm }
-            allowDeletePermission={ this.allowDeletePermission }
-            deletedTask={ taskTodelete?filteredTasks[taskTodelete].title:null }
+            onAlertConfirm={this.handleAlertConfirm}
+            allowDeletePermission={this.allowDeletePermission}
+            deletedTask={taskTodelete ? filteredTasks[taskTodelete].title : null}
           />
           <Header
             callDialog={this.handleAddDialogCall}
