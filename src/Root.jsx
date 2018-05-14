@@ -10,7 +10,7 @@ import EditeTask from './components/PrompDialogEdit';
 import AlertAdd from './components/AlertAdd';
 import List from './List';
 import AlertDeleteConfirm from './components/AlertDeleteConfirm';
-import AlertSearch from './components/AlertSearch';
+//import AlertSearch from './components/AlertSearch';
 import handleStorage from './LocalStorage/storageUpdate'
 import storageCheck from './LocalStorage/storageCheck'
 
@@ -48,7 +48,7 @@ export default class Root extends Component {
     keyEditedTask: null,
     dialogEdit: false,
     searchValue: '',
-    alertSearch: false,
+    //alertSearch: false,
   }
   iterator = 0;
 
@@ -142,11 +142,11 @@ export default class Root extends Component {
     })
   }
 
-  handleAlertSearch = () => {
+ /* handleAlertSearch = () => {
     this.setState({
       alertSearch: !this.state.alertSearch
     })
-  }
+  }*/
 
   handleAlertConfirm = (key) => {
     if (key) {
@@ -325,10 +325,10 @@ export default class Root extends Component {
             open={alertAdd}
             handleAlert={this.handleAlertAdd}
           />
-          <AlertSearch
+          {/*<AlertSearch
             open={alertSearch}
             handleAlert={this.handleAlertSearch}
-          />
+          />*/}
           <AlertDeleteConfirm
             open={alertDeleteConfirm}
             onAlertConfirm={ this.handleAlertConfirm }
