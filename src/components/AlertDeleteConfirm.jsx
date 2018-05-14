@@ -7,7 +7,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 export default class AlertDeleteConfirm extends Component {
   
   render() {
-    const { open, onAlertConfirm, allowDeletePermission } = this.props; ///
+    const { open, onAlertConfirm, allowDeletePermission, deletedTask } = this.props; ///
 
     const actions = [
         <FlatButton
@@ -34,7 +34,7 @@ export default class AlertDeleteConfirm extends Component {
           open={open}
           onRequestClose={onAlertConfirm}
         >
-          "Are you sure?"
+          You delete { deletedTask }. Continue?
         </Dialog>
       </div>
     );

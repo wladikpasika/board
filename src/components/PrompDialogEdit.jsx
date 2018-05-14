@@ -4,6 +4,9 @@ import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
+import {orange500, blue500} from 'material-ui/styles/colors';
+
+
 
 export default class DialogComponent extends Component {
 
@@ -17,11 +20,11 @@ export default class DialogComponent extends Component {
   }
 
   handleEditItems = () => {
-    const { title, description } = this.state;
+    const { title, description="" } = this.state;
 
     this.props.onClose();
-    this.props.onEdit({ title, description })
-    this.handleClearState()
+    this.props.onEdit({ title, description });
+    this.handleClearState();
   }
 
   handleInputChangeTitle = (event) => {
@@ -43,7 +46,7 @@ export default class DialogComponent extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-   if (nextProps.open && nextProps.defaultValueTitle&&nextProps.defaultValueDescription) {
+   if (nextProps.open && nextProps.defaultValueTitle) {
       this.setState(
           { 
           title: nextProps.defaultValueTitle,
@@ -71,6 +74,7 @@ export default class DialogComponent extends Component {
         primary={true}
         keyboardFocused={false}
         onClick={this.handleEditItems}
+        disabled={!this.state.title.length}
       />
     ];
 
@@ -89,6 +93,7 @@ export default class DialogComponent extends Component {
           value={ title }
           fullWidth
           onChange={ this.handleInputChangeTitle }
+          errorText={ !this.state.title.length?"This field is required":false }
         />
         <TextField
           autoFocus
@@ -96,8 +101,7 @@ export default class DialogComponent extends Component {
           value={ description }
           fullWidth
           onChange={ this.handleInputChangeDescription }
-          multiLine={ true }
-          rows={ 3 }
+          multiLine={ true }    
         />
       </Dialog>
     )

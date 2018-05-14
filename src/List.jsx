@@ -17,22 +17,28 @@ import style from './css/list.css';
 const styles = {
   menuItemNone: { display: "none" },
   menuItemBlock: { display: "block" },
-  cardText:{ whiteSpace: "normal" }
+  cardText:{ whiteSpace: "normal" },
+  iconMenu:{
+    height:"auto",
+    width:"auto",
+    margin: "0"
+  },
+  cardHeader:{
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+
+  listItem:{
+    fontSize: "13px",
+  }
 };
 
 class ComponentList extends Component {
 
   handleEditTask = (values) => {
-    const { title, description, key } = values;
 
-    if (
-      title 
-      && title.trim()
-      && description
-      && description.trim()
-    ) {
       this.props.onEdit(values);
-    }
   }
 
   render() {
@@ -40,24 +46,20 @@ class ComponentList extends Component {
 
     return (
       <div className="list-item">
-        <List>
           {
             Object.keys(tasks).map((key, index) => {
 
               if(tasks[key].status === status){
                 const title = tasks[key].title;
-              const description = tasks[key].description;
+                const description = tasks[key].description;
+                const time = tasks[key].time;
 
               const rightHandler = (
               <IconMenu 
                 iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
                 anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
                 targetOrigin={{ horizontal: 'left', vertical: 'top' }}
-                style = {{
-                  height:"auto",
-                  width:"auto",
-                  margin: "0"
-                }}     
+                style = {styles.iconMenu}     
               >
                 <MenuItem primaryText="Edit"
                   onClick={() => {
@@ -86,7 +88,7 @@ class ComponentList extends Component {
                       }
                       onClick = {() => onMove(key, 'todo')}
                       />,
-                      <MenuItem primaryText='Move to "In Progress"' 
+                      <MenuItem primaryText="Move to In Progress" 
                         style = {
                         status==='inProgress'
                         ?styles.menuItemNone
@@ -110,28 +112,29 @@ class ComponentList extends Component {
               <div key={index}
               className="card"
               >
-                <ListItem
-                  rightIcon={ rightHandler }
-                >
                 <Card>
                     <CardHeader
-                      title={ title }
-                      actAsExpander={ true }
-                      showExpandableButton={ true }
-                    />
-                    <CardText expandable = {true}
-                      style = {styles.cardText}
+                      title={ <h3>{title}</h3> }
+                      style={styles.cardHeader}
+                      >
+                      { rightHandler }
+                      </CardHeader>
+                    <CardText
+                      style = { styles.cardText }
                     >
-                    {description}
+                      {description}
+                      <List>
+                        <ListItem primaryText={`Status: ${status}`} style = {styles.listItem}/>
+                        <ListItem primaryText={`Create time: ${time}`} style = {styles.listItem}/>
+                      </List>
                     </CardText>
-                </Card>
-                </ListItem>       
+                </Card>      
               </div>
             );  
               }  
           })  
         }
-        </List>
+      
       </div>
     );
   }

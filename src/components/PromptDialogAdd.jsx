@@ -4,6 +4,13 @@ import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
+import { orange500, blue500 } from 'material-ui/styles/colors';
+
+const styles={
+  error:{
+    color: orange500
+  }
+}
 
 export default class DialogComponent extends Component {
 
@@ -14,7 +21,7 @@ export default class DialogComponent extends Component {
 
   handleAddItem = () => {
     const { closeDialog, onAddTask } = this.props;
-    const { title, description } = this.state;
+    const { title="", description="" } = this.state;
     closeDialog();
     onAddTask(
       {
@@ -54,12 +61,14 @@ export default class DialogComponent extends Component {
           this.handleClearState();
           this.props.closeDialog();
         }}
+        
       />,
       <FlatButton
         label="Submit"
         primary={ true }
         keyboardFocused={ false }
         onClick={ this.handleAddItem }
+        disabled={ !this.state.title.length }
       />
     ];
 
@@ -78,7 +87,9 @@ export default class DialogComponent extends Component {
           fullWidth
           onChange={ this.handleInputChangeTitle }
           value={ this.state.title }
-          
+          errorText={ !this.state.title.length?"This field is required":false }
+          errorStyle={ styles.error }
+
         />
         <TextField
           autoFocus
@@ -87,7 +98,6 @@ export default class DialogComponent extends Component {
           onChange={ this.handleInputChangeDescription }
           value={ this.state.description }
           multiLine={ true }
-          rows={ 3 }
         />
       </Dialog>
     )

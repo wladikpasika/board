@@ -25,7 +25,7 @@ class AlertDialog extends Component {
           open={open}
           onRequestClose={handleAlert}
         >
-          Empty Field!!!
+          Empty Title Field!!!
         </Dialog>
       </div>
     );
