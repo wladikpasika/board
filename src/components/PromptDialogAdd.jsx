@@ -78,6 +78,7 @@ export default class DialogComponent extends Component {
           fullWidth
           onChange={ this.handleInputChangeTitle }
           value={ this.state.title }
+          
         />
         <TextField
           autoFocus
@@ -85,6 +86,8 @@ export default class DialogComponent extends Component {
           fullWidth
           onChange={ this.handleInputChangeDescription }
           value={ this.state.description }
+          multiLine={ true }
+          rows={ 3 }
         />
       </Dialog>
     )

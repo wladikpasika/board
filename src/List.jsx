@@ -119,7 +119,9 @@ class ComponentList extends Component {
                       actAsExpander={ true }
                       showExpandableButton={ true }
                     />
-                    <CardText expandable = {true}>
+                    <CardText expandable = {true}
+                      style = {styles.cardText}
+                    >
                     {description}
                     </CardText>
                 </Card>

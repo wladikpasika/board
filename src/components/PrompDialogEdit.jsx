@@ -96,6 +96,8 @@ export default class DialogComponent extends Component {
           value={ description }
           fullWidth
           onChange={ this.handleInputChangeDescription }
+          multiLine={ true }
+          rows={ 3 }
         />
       </Dialog>
     )
